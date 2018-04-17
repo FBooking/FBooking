@@ -1,5 +1,5 @@
 {
-  "name": "FBooking API",
+  "name": "fbooking",
   "version": "0.0.1",
   "description": "FBooking API Nodejs, Express, Mongogb",
   "main": "index.js",
