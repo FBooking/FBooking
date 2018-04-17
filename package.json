@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:dvm4078/FBooking.git"
+    "url": "git@github.com:FBooking/FBooking"
   },
   "keywords": [
     "express",

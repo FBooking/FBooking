@@ -6,7 +6,7 @@ First, ensure you have node and mongo installed on your system.
 
 ```sh
 # clone it
-git clone git@github.com:dvm4078/FBooking.git FBooking
+git clone git@github.com:FBooking/FBooking FBooking
 cd FBooking
 
 # Make it your own
