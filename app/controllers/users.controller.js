@@ -1,47 +1,21 @@
+import request from 'request';
 import BaseController from './base.controller';
 import User from '../models/user';
 
 class UsersController extends BaseController {
 
-  whitelist = [
-    'firstname',
-    'lastname',
-    'email',
-    'username',
-    'password',
-  ];
-
-  _populate = async (req, res, next) => {
-    const { username } = req.params;
-
-    try {
-      const user = await User.findOne({ username });
-
-      if (!user) {
-        const err = new Error('User not found.');
-        err.status = 404;
-        return next(err);
-      }
-
-      req.user = user;
-      next();
-    } catch(err) {
-      next(err);
-    }
-  }
-
   login = async (req, res, next) => {
-    const { username, password } = req.body;
     try {
-      const user = await User.findOne({ username });
-      if (!user || !user.authenticate(password)) {
-        const err = new Error('Please verify your credentials.');
-        err.status = 401;
-        return next(err);
-      }
-
-      const token = user.generateToken();
-      return res.status(200).json({ token });
+      request(`https://graph.facebook.com/me?access_token=${req.body.token}`, (error, response, body) => {
+        body = (body) ? JSON.parse(body) : { id: null };
+        if (body.id) {
+          return res.status(200).json({ body });
+        } else {
+          const err = new Error('Please verify your credentials.');
+          err.status = 401;
+          return next(err);
+        }
+      });
     } catch (err) {
       next(err);
     }

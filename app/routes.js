@@ -10,8 +10,6 @@ import CategoryController from './controllers/category.controller';
 import LocationController from './controllers/location.controller';
 import ChildStadiumController from './controllers/child-stadium.controller';
 
-import authenticate from './middleware/authenticate';
-import accessControl from './middleware/access-control';
 import errorHandler from './middleware/error-handler';
 
 const routes = new Router();
@@ -66,7 +64,7 @@ routes.post('/child-stadium', ChildStadiumController.create);
 routes.put('/child-stadium', ChildStadiumController.update);
 
 // Admin
-routes.get('/admin', accessControl('admin'), MetaController.index);
+routes.get('/admin', MetaController.index);
 
 routes.use(errorHandler);
 
