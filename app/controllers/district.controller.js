@@ -1,5 +1,5 @@
 import BaseController from './base.controller';
-import District from '../models/distric';
+import District from '../models/district';
 
 class DistricController extends BaseController {
 

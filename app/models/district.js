@@ -11,6 +11,6 @@ const DistrictSchema = new Schema({
         timestamps: true,
     });
 
-const DistrictModel = mongoose.model('Distric', DistrictSchema);
+const DistrictModel = mongoose.model('District', DistrictSchema);
 
 export default DistrictModel;

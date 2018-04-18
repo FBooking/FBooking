@@ -14,7 +14,7 @@ const StadiumSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'CategoryStadium',
     },
-    districId: {
+    districtId: {
         type: Schema.Types.ObjectId,
         ref: 'Distric',
     },

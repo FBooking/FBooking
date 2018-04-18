@@ -4,9 +4,9 @@ import Stadium from '../models/stadium';
 class StadiumController extends BaseController {
 
     search = async (req, res, next) => {
-        const { page, perPage, districId, categoryId } = req.query;
+        const { page, perPage, districtId, categoryId } = req.query;
         const conditions = {};
-        if (districId) conditions.districId = districId;
+        if (districtId) conditions.districtId = districtId;
         if (categoryId) conditions.categoryId = categoryId;
         try {
             const stadium =
