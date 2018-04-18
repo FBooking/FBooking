@@ -1,8 +1,8 @@
-// Load environment variables
+// Tải các biến môi trường
 require('dotenv').config();
 
-// Initialize Database
+// Khởi tạo Database
 require('./database');
 
-// Initialize Server
+// Khởi tạo server
 require('./server');

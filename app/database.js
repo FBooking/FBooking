@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import Constants from './config/constants';
 
-// Use native promises
+// Thêm prototype Promise cho mongoose
 mongoose.Promise = global.Promise;
 
-// Connect to our mongo database;
+// Kết nối đến database;
 mongoose.connect(Constants.mongo.uri);
 mongoose.connection.on('error', (err) => {
   throw err;

@@ -1,7 +1,7 @@
 import path from 'path';
 import merge from 'lodash/merge';
 
-// Default configuations applied to all environments
+// Các setting mặc định dùng cho tất cả các môi trường
 const defaultConfig = {
   env: process.env.NODE_ENV,
   get envs() {
@@ -15,10 +15,10 @@ const defaultConfig = {
   root: path.normalize(__dirname + '/../../..'),
   port: process.env.PORT || 4567,
   ip: process.env.IP || '0.0.0.0',
-  apiPrefix: '', // Could be /api/resource or /api/v2/resource
+  apiPrefix: '', // Có thể là 'api', 'api/v2' ...
 
   /**
-   * MongoDB configuration options
+   * Cấu hình MongoDB
    */
   mongo: {
     seed: true,
@@ -30,7 +30,7 @@ const defaultConfig = {
   },
 
   /**
-   * Security configuation options regarding sessions, authentication and hashing
+   * Cấu hình bảo mật liên quan đến session, authendication và mã hóa
    */
   security: {
     sessionSecret: process.env.SESSION_SECRET || 'i-am-the-secret-key',
@@ -39,9 +39,9 @@ const defaultConfig = {
   },
 };
 
-// Environment specific overrides
+// Setting cho các môi trường cụ thể
 const environmentConfigs = {
-  development: {
+  development: { // môi trường dev
     mongo: {
       uri: process.env.MONGO_URI || 'mongodb://localhost/fbooking',
     },
@@ -49,7 +49,7 @@ const environmentConfigs = {
       saltRounds: 4,
     },
   },
-  production: {
+  production: { // môi trường product
     mongo: {
       seed: false,
       uri: process.env.MONGO_URI,
@@ -57,5 +57,5 @@ const environmentConfigs = {
   },
 };
 
-// Recursively merge configurations
+// Merge các setting
 export default merge(defaultConfig, environmentConfigs[process.env.NODE_ENV] || {});

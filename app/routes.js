@@ -9,6 +9,7 @@ import StadiumController from './controllers/stadium.controller';
 import CategoryController from './controllers/category.controller';
 import LocationController from './controllers/location.controller';
 import ChildStadiumController from './controllers/child-stadium.controller';
+import SessionController from './controllers/session.controller';
 
 import errorHandler from './middleware/error-handler';
 
@@ -43,7 +44,7 @@ routes.put('/category', CategoryController.update);
 routes.get('/stadiums', StadiumController.search);
 routes.get('/stadium/:stadiumId', StadiumController.find);
 routes.post('/stadium', StadiumController.create);
-routes.put('/amenitie', StadiumController.update);
+routes.put('/stadium', StadiumController.update);
 
 // Amennitie
 // routes.get('/amennities', AmenitieController.search);
@@ -62,6 +63,12 @@ routes.put('/location', LocationController.update);
 routes.get('/child-stadiums/:stadiumId', ChildStadiumController.find);
 routes.post('/child-stadium', ChildStadiumController.create);
 routes.put('/child-stadium', ChildStadiumController.update);
+
+// Session
+routes.get('/sessions', SessionController.search);
+routes.get('/session/:stadiumId', SessionController.find);
+routes.post('/session', SessionController.create);
+routes.put('/session', SessionController.update);
 
 // Admin
 routes.get('/admin', MetaController.index);

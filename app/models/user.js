@@ -9,25 +9,25 @@ const UserSchema = new Schema({
   username: {
     type: String,
     unique: true,
-    required: [true, 'Username is required.'],
+    required: [true, 'Username đâu?'],
   },
   email: {
     type: String,
     unique: true,
     lowercase: true,
-    required: [true, 'Email is required'],
+    required: [true, 'Email đâu?'],
     validate: {
       validator(email) {
         // eslint-disable-next-line max-len
         const emailRegex = /^[-a-z0-9%S_+]+(\.[-a-z0-9%S_+]+)*@(?:[a-z0-9-]{1,63}\.){1,125}[a-z]{2,63}$/i;
         return emailRegex.test(email);
       },
-      message: '{VALUE} is not a valid email.',
+      message: '{VALUE} không phải là một địa chỉ email hợp lệ',
     },
   },
   password: {
     type: String,
-    required: [true, 'Password is required.'],
+    required: [true, 'Password đâu?'],
   },
   idCard: String,
   phoneNumber: String,
@@ -40,7 +40,7 @@ const UserSchema = new Schema({
   timestamps: true,
 });
 
-// Strip out password field when sending user object to client
+// Loại bỏ trường password khi trả lại kết quả là thông tin chi tiết của một user
 UserSchema.set('toJSON', {
   virtuals: true,
   transform(doc, obj) {
@@ -52,7 +52,7 @@ UserSchema.set('toJSON', {
   },
 });
 
-// Ensure email has not been taken
+// Đảm bảo email là duy nhất
 UserSchema
   .path('email')
   .validate((email, respond) => {
@@ -63,9 +63,9 @@ UserSchema
       .catch(() => {
         respond(false);
       });
-  }, 'Email already in use.');
+  }, 'Email đã được sử dụng');
 
-// Validate username is not taken
+// Đảm bảo username là duy nhất
 UserSchema
   .path('username')
   .validate((username, respond) => {
@@ -76,19 +76,18 @@ UserSchema
       .catch(() => {
         respond(false);
       });
-  }, 'Username already taken.');
+  }, 'Username đã được sử dụng');
 
-// Validate password field
+// Validate password
 UserSchema
   .path('password')
   .validate(function(password) {
     return password.length >= 6 && password.match(/\d+/g);
-  }, 'Password be at least 6 characters long and contain 1 number.');
+  }, 'Password phải chứa ít nhất 6 ký tự và bao gồm 1 ký tự số');
 
-//
+// Mã hóa mật khẩu trước khi lưu một user
 UserSchema
   .pre('save', function(done) {
-    // Encrypt password before saving the document
     if (this.isModified('password')) {
       const { saltRounds } = Constants.security;
       this._hashPassword(this.password, saltRounds, (err, hash) => {
@@ -106,19 +105,9 @@ UserSchema
  */
 UserSchema.methods = {
   /**
-   * Authenticate - check if the passwords are the same
+   * Tạo một JSON web token để xác thực thông tin các request
    * @public
-   * @param {String} password
-   * @return {Boolean} passwords match
-   */
-  authenticate(password) {
-    return bcrypt.compareSync(password, this.password);
-  },
-
-  /**
-   * Generates a JSON Web token used for route authentication
-   * @public
-   * @return {String} signed JSON web token
+   * @return {String} trả về một token duy nhất với thời gian live được quy định tại file Constant thư mục config
    */
   generateToken() {
     return jwt.sign({ _id: this._id }, Constants.security.sessionSecret, {
@@ -127,12 +116,12 @@ UserSchema.methods = {
   },
 
   /**
-   * Create password hash
+   * Tạo một mật khẩu đã được mã hóa
    * @private
    * @param {String} password
    * @param {Number} saltRounds
    * @param {Function} callback
-   * @return {Boolean} passwords match
+   * @return {Boolean} một mật khẩu đã được mã hóa
    */
   _hashPassword(password, saltRounds = Constants.security.saltRounds, callback) {
     return bcrypt.hash(password, saltRounds, callback);

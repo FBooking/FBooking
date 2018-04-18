@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import methodOverride from 'method-override';
 import morgan from 'morgan';
 
 import routes from './routes';
@@ -9,29 +8,22 @@ import Constants from './config/constants';
 
 const app = express();
 
-// Enable CORS with various options
-// https://github.com/expressjs/cors
+// Bật CORS. Nếu không dùng khi client request lên sẽ lỗi 'No Acccess Origin'
+// Tham khảo: ttps://github.com/expressjs/cors
 app.use(cors());
 
-// Request logger
-// https://github.com/expressjs/morgan
+// Log các request
+// Tham khảo: https://github.com/expressjs/morgan
 if (!Constants.envs.test) {
   app.use(morgan('dev'));
 }
 
-// Parse incoming request bodies
-// https://github.com/expressjs/body-parser
+// Parse body trong các request gửi lên từ phía client
+// Tham khảo: https://github.com/expressjs/body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Lets you use HTTP verbs such as PUT or DELETE
-// https://github.com/expressjs/method-override
-app.use(methodOverride());
-
-// Mount public routes
-// app.use('/public', express.static(`${__dirname}/public`));
-
-// Mount API routes
+// Khởi tạo các router dùng trong app
 app.use(Constants.apiPrefix, routes);
 
 app.listen(Constants.port, () => {
