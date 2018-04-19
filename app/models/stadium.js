@@ -18,7 +18,7 @@ const StadiumSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Distric',
     },
-    dealDate: [{ type: String }],
+    dealDate: String,
     description: String,
     thumbnail: [{ type: String }],
     isActive: {
