@@ -13,6 +13,7 @@ class SessionController extends BaseController {
     search = async (req, res, next) => {
         const { page, perPage, date } = req.query; // eslint-disable-line TODO: Làm rõ yêu cầu
         const conditions = {};
+        const defaultDate = '10/102018';
         if (date) conditions.createdAt = date;
         try {
             const category =
@@ -57,10 +58,32 @@ class SessionController extends BaseController {
         }
     }
 
+    /**
+     * Cập nhật thông tin một Session
+    * @param {req} req Thông tin từ client gủi lên.
+    * @param {res} res Đối số được gọi để trả về kết quả sau khi cập nhật session thành công.
+    * @param {next} next Callback argument to the middleware function .
+    * @return {void} Nếu cập nhật session thành công trả về session đó kèm theo id
+     */
     update = async (req, res, next) => {
         const { _id, ...otherParams } = req.body;
         try {
             res.status(201).json(await Session.findByIdAndUpdate(_id, otherParams, { new: true }));
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Xóa một Session theo id
+    * @param {req} req Thông tin từ client gủi lên.
+    * @param {res} res Đối số được gọi để trả về kết quả sau khi tạo mới session thành công.
+    * @param {next} next Callback argument to the middleware function .
+    * @return {void} Nếu xóa thành công trả về một object { n: số lượng record đã xóa, ok: Trạng thái xóa thành công hay thất bại}
+     */
+    delete = async (req, res, next) => {
+        try {
+            res.status(201).json(await Session.remove({ _id: req.params.sessionId }));
         } catch (err) {
             next(err);
         }

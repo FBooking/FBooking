@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const Resercation = new Schema({
+const Reservation = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -28,6 +28,6 @@ const Resercation = new Schema({
         timestamps: true,
     });
 
-const ResercationModel = mongoose.model('Resercation', Resercation);
+const ReservationModel = mongoose.model('Reservation', Reservation);
 
-export default ResercationModel;
+export default ReservationModel;

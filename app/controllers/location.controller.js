@@ -42,12 +42,9 @@ class LocationController extends BaseController {
         }
     }
 
-    detail = async (req, res, next) => {
-        const { stadiumId } = req.query;
+    delete = async (req, res, next) => {
         try {
-            const location =
-                await Location.find({ stadiumId });
-            res.json(location);
+            res.status(201).json(await Location.remove({ _id: req.params.locationId }));
         } catch (err) {
             next(err);
         }

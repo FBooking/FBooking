@@ -42,12 +42,9 @@ class ChildStadiumController extends BaseController {
         }
     }
 
-    detail = async (req, res, next) => {
-        const { stadiumId } = req.query;
+    delete = async (req, res, next) => {
         try {
-            const childStadium =
-                await ChildStadium.find({ stadiumId });
-            res.json(childStadium);
+            res.status(201).json(await ChildStadium.remove({ _id: req.params.childStadiumId }));
         } catch (err) {
             next(err);
         }

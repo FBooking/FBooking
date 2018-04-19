@@ -3,16 +3,13 @@ import Amenitie from '../models/amentitie';
 
 class AmentitieController extends BaseController {
 
-    search = async (req, res, next) => {
-        try {
-            const amenities =
-                await Amenitie.find({});
-            res.json(amenities);
-        } catch (err) {
-            next(err);
-        }
-    }
-
+    /**
+     * Tìm kiếm một Amenitie theo id
+    * @param {req} req Thông tin từ client gủi lên
+    * @param {res} res Đối số được gọi để trả về kết quả sau khi tìm kiếm Amenitie thành công.
+    * @param {next} next Callback argument to the middleware function .
+    * @return {void} Nếu tìm kiếm thành công trả về một object Amenitie
+     */
     find = async (req, res, next) => {
         try {
             const amenitie = await Amenitie.findOne({ _id: req.params.amenitieId });
@@ -22,6 +19,13 @@ class AmentitieController extends BaseController {
         }
     }
 
+    /**
+     * Tạo một record Amenitie
+    * @param {req} req Thông tin từ client gủi lên.
+    * @param {res} res Đối số được gọi để trả về kết quả sau khi tạo mới Amenitie thành công.
+    * @param {next} next Callback argument to the middleware function .
+    * @return {void} Nếu tạo mới Amenitie thành công trả về Amenitie đó kèm theo id
+     */
     create = async (req, res, next) => {
         const amentitie = new Amenitie({
             ...req.body,
@@ -33,6 +37,13 @@ class AmentitieController extends BaseController {
         }
     }
 
+    /**
+     * Cập nhật thông tin một Amenitie theo id
+    * @param {req} req Thông tin từ client gủi lên.
+    * @param {res} res Đối số được gọi để trả về kết quả sau khi update Amenitie thành công.
+    * @param {next} next Callback argument to the middleware function .
+    * @return {void} Nếu cập nhật Amenitie thành công trả về Amenitie đó đã được cập nhật
+     */
     update = async (req, res, next) => {
         const { _id, ...otherParams } = req.body;
         try {
@@ -42,12 +53,34 @@ class AmentitieController extends BaseController {
         }
     }
 
+    /**
+    * Tìm kiếm một Amenitie theo stadiumId
+   * @param {req} req Thông tin từ client gủi lên
+   * @param {res} res Đối số được gọi để trả về kết quả sau khi tìm kiếm Amenitie thành công.
+   * @param {next} next Callback argument to the middleware function .
+   * @return {void} Nếu tìm kiếm thành công trả về một object Amenitie
+    */
     detail = async (req, res, next) => {
         const { stadiumId } = req.query;
         try {
             const amenitie =
                 await Amenitie.find({ stadiumId });
             res.json(amenitie);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Xóa một Amenitie theo id
+    * @param {req} req Thông tin từ client gủi lên.
+    * @param {res} res Đối số được gọi để trả về kết quả sau khi tạo mới session thành công.
+    * @param {next} next Callback argument to the middleware function .
+    * @return {void} Nếu xóa thành công trả về một object { n: số lượng record đã xóa, ok: Trạng thái xóa thành công hay thất bại}
+     */
+    delete = async (req, res, next) => {
+        try {
+            res.status(201).json(await Amenitie.remove({ _id: req.params.amenitieId }));
         } catch (err) {
             next(err);
         }
