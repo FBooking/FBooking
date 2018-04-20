@@ -1,4 +1,3 @@
-import path from 'path';
 import merge from 'lodash/merge';
 
 // Các setting mặc định dùng cho tất cả các môi trường
@@ -12,22 +11,9 @@ const defaultConfig = {
   },
 
   version: require('../../package.json').version,
-  root: path.normalize(__dirname + '/../../..'),
   port: process.env.PORT || 4567,
   ip: process.env.IP || '0.0.0.0',
   apiPrefix: '', // Có thể là 'api', 'api/v2' ...
-
-  /**
-   * Cấu hình MongoDB
-   */
-  mongo: {
-    seed: true,
-    options: {
-      db: {
-        safe: true,
-      },
-    },
-  },
 
   /**
    * Cấu hình bảo mật liên quan đến session, authendication và mã hóa
@@ -51,7 +37,6 @@ const environmentConfigs = {
   },
   production: { // môi trường product
     mongo: {
-      seed: false,
       uri: process.env.MONGO_URI,
     },
   },

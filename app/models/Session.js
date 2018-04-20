@@ -7,9 +7,11 @@ const SessionSchema = new Schema({
     },
     startedAt: {
         type: Date,
+        required: true,
     },
     finishedAt: {
         type: Date,
+        required: true,
     },
     stadiumId: {
         type: Schema.Types.ObjectId,
@@ -18,6 +20,7 @@ const SessionSchema = new Schema({
     },
     price: {
         type: Number,
+        required: true,
     },
     duration: {
         type: Number,

@@ -13,12 +13,18 @@ class SessionController extends BaseController {
     search = async (req, res, next) => {
         const { page, perPage, date } = req.query; // eslint-disable-line TODO: Làm rõ yêu cầu
         const conditions = {};
-        const defaultDate = '10/102018';
-        if (date) conditions.createdAt = date;
+        const dateSelect = new Date(date); // là một string, dạng "4 20, 2018" (tháng ngày, năm)
+        dateSelect.setHours(23, 59, 59, 999); // set thời gian về cuối ngày. Ví dụ "4 20, 2018" => Fri Apr 20 2018 23:59:59 GMT+0700 (+07) để get Unix time rồi truy vấn
+        // const dateSelectUnix = new Date(dateSelect).getTime() / 1000.0; // set thời gian về dạng Unix time
+        const now = Math.round(new Date().getTime() / 1000.0); // get thời gian hiện tại theo định dạng Unix time
+        if (date) conditions.startedAt = {
+            $gte: now,
+            $lt: dateSelect,
+        };
         try {
             const category =
                 await Session.find(conditions).limit(parseInt(perPage, 10)).skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
-            res.json(category);
+            res.status(201).json(category);
         } catch (err) {
             next(err);
         }
@@ -34,7 +40,7 @@ class SessionController extends BaseController {
     find = async (req, res, next) => {
         try {
             const session = await Session.findOne({ _id: req.params.sessionId });
-            res.json(session);
+            res.status(201).json(session);
         } catch (err) {
             next(err);
         }
