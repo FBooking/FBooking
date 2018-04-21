@@ -5,6 +5,7 @@ class SessionController extends BaseController {
 
     /**
      * Tìm kiếm thông tin session theo các điều kiện
+     * Query có 3 tham số chính: page, perPage và date. "date" truyền vào(gửi lên) có dạng "YYYY-MM-DD". Ví dụ ("2018-04-22")
     * @param {req} req Thông tin từ client gủi lên.
     * @param {res} res Đối số được gọi để trả về kết quả sau khi tìm kiếm session thành công.
     * @param {next} next Callback argument to the middleware function .
@@ -13,14 +14,31 @@ class SessionController extends BaseController {
     search = async (req, res, next) => {
         const { page, perPage, date } = req.query; // eslint-disable-line TODO: Làm rõ yêu cầu
         const conditions = {};
-        const dateSelect = new Date(date); // là một string, dạng "4 20, 2018" (tháng ngày, năm)
-        dateSelect.setHours(23, 59, 59, 999); // set thời gian về cuối ngày. Ví dụ "4 20, 2018" => Fri Apr 20 2018 23:59:59 GMT+0700 (+07) để get Unix time rồi truy vấn
-        // const dateSelectUnix = new Date(dateSelect).getTime() / 1000.0; // set thời gian về dạng Unix time
-        const now = Math.round(new Date().getTime() / 1000.0); // get thời gian hiện tại theo định dạng Unix time
-        if (date) conditions.startedAt = {
-            $gte: now,
-            $lt: dateSelect,
-        };
+        const dateSelect = new Date(date); // Chuyển ngày cần tìm sang dạng UTC Time tức là múi giờ gốc là GMT + 0
+        const [time, hour] = dateSelect.toLocaleString().split(' '); // Chuyển ngày cần tìm về dạng Local Time tức là múi giờ là múi giờ của system. Sau đó cắt ra thành 2 phần tử. Phần tử thứ nhất là ngày tháng năm, phần thử thứ 2 là giờ phút giây
+        const [year, month, day] = time.split('-'); // Cắt chuỗi ngày tháng năm ra thành từng phần tử một
+        // console.log(`Ngày ${date} ở dạng UCT Time`, dateSelect);
+        // console.log(`Ngày ${date} ở dạng Local Time`, dateSelect.toLocaleString());
+        dateSelect.setHours(23, 59, 59, 999); // Set thời gian ngày cần tìm về cuối ngày, tức là 23 giờ 59 phút của ngày đó dạng UTC Time.
+        // console.log(`23 giờ 59 phút ngày ${date} ở dạng UCT Time`, dateSelect);
+        // console.log(`23 giờ 59 phút ngày ${date} ở dạng Local Time`, dateSelect.toLocaleString());
+        const now = new Date(); // Lấy ngày giờ hiện tại dạng UTC Time
+        const [timeNow, hourNow] = now.toLocaleString().split(' '); // Chuyển ngày giờ hiện tại về dạng Local Time. Sau đó cắt ra thành 2 phần tử. Phần tử thứ nhất là ngày tháng năm, phần thử thứ 2 là giờ phút giây
+        const [yearNow, monthNow, dayNow] = timeNow.split('-'); // Cắt chuỗi ngày tháng năm ra thành từng phần tử một
+        const isNow = ((day == dayNow) && (month == monthNow) && (year == yearNow)); // Nếu ngày tháng năm cần tìm = bằng với ngày tháng năm hiện tại thì trả về true, ngược lại là false
+        if (isNow && date) { // Nếu có tìm theo ngày và ngày cần tìm = ngày tháng năm hiện tại thì tìm các session với điều kiện startedAt từ khoảng ngày giờ hiện tại đến hết ngày hiện tại
+            conditions.startedAt = {
+                $gte: now,
+                $lt: dateSelect,
+            };
+        } else if (!isNow && date) { // Nếu có tìm theo ngày và ngày cần tìm không phải là ngày hiện tại thì tìm các session với điều kiện thời gian trong ngày cần tìm. Nghĩa là từ 0h đến 24h của ngày đó
+            conditions.startedAt = {
+                $gte: new Date(date),
+                $lt: dateSelect,
+            };
+        }
+        // console.log('Thời gian hiện tại ở dạng UCT Time', now);
+        // console.log('Thời gian hiện tại ở dạng Local Time', now.toLocaleString());
         try {
             const category =
                 await Session.find(conditions).limit(parseInt(perPage, 10)).skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
@@ -48,6 +66,7 @@ class SessionController extends BaseController {
 
     /**
      * Tạo một Session
+     * Trường "startedAt" và "finishedAt" trong body gửi lên sẽ có dạng Local Time (YYYY-mm-ddTHH:MM:ssZ). Ví dụ "2018-04-22T20:00:00.000+07:00" <- Ngày 20 giờ, 00 phút, 00 giây, ngày 22 tháng 4 năm 2018 theo múi giờ GTM + 7
     * @param {req} req Thông tin từ client gủi lên.
     * @param {res} res Đối số được gọi để trả về kết quả sau khi tạo mới session thành công.
     * @param {next} next Callback argument to the middleware function .
