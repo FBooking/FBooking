@@ -14,7 +14,7 @@ class DistricController extends BaseController {
         try {
             const districts =
                 await District.find({});
-            res.json(districts);
+            res.status(201).json(districts);
         } catch (err) {
             next(err);
         }
@@ -30,7 +30,7 @@ class DistricController extends BaseController {
     find = async (req, res, next) => {
         try {
             const district = await District.findOne({ _id: req.params.districtId });
-            res.json(district);
+            res.status(201).json(district);
         } catch (err) {
             next(err);
         }

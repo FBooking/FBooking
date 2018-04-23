@@ -1,5 +1,6 @@
 import BaseController from './base.controller';
 import Stadium from '../models/stadium';
+import ChildStadium from '../models/childStadium';
 
 class StadiumController extends BaseController {
 
@@ -17,8 +18,22 @@ class StadiumController extends BaseController {
         if (categoryId) conditions.categoryId = categoryId;
         if (name) conditions.name = { $regex: name };
         try {
-            const stadium = await Stadium.find(conditions).limit(parseInt(perPage, 10)).skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
-            res.status(201).json(stadium);
+            const populateQuery = [
+                { path: 'categoryId', select: { name: 1 } },
+                { path: 'districtId', select: { name: 1 } },
+            ];
+            const stadiums = await Stadium
+                .find(conditions)
+                .populate(populateQuery)
+                .limit(parseInt(perPage, 10))
+                .skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
+
+            stadiums.map(async (stadium, idx) => {
+                const { _id } = stadium;
+                const childs = await ChildStadium.find({ stadiumId: _id });
+                stadiums[idx].child = childs;
+            });
+            res.status(201).json(stadiums);
         } catch (err) {
             next(err);
         }

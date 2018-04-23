@@ -12,9 +12,9 @@ class CategoryController extends BaseController {
      */
     search = async (req, res, next) => {
         try {
-            const category =
+            const categories =
                 await Category.find({});
-            res.json(category);
+            res.status(201).json(categories);
         } catch (err) {
             next(err);
         }
@@ -30,7 +30,7 @@ class CategoryController extends BaseController {
     find = async (req, res, next) => {
         try {
             const category = await Category.findOne({ _id: req.params.categoryId });
-            res.json(category);
+            res.status(201).json(category);
         } catch (err) {
             next(err);
         }

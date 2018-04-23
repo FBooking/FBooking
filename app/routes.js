@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import multer from 'multer';
 
 import MetaController from './controllers/meta.controller';
 import AuthController from './controllers/auth.controller';
@@ -11,10 +12,21 @@ import LocationController from './controllers/location.controller';
 import ChildStadiumController from './controllers/child-stadium.controller';
 import SessionController from './controllers/session.controller';
 import ReservationController from './controllers/reservation.controller';
+import UploadController from './controllers/upload.controller';
 
 import errorHandler from './middleware/error-handler';
 
 const routes = new Router();
+// const storage = multer.diskStorage({ // Cấu hình multer
+//     destination: (req, file, cb) => {
+//         cb(null, 'uploads/');
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, file.originalname);
+//     },
+// });
+
+const upload = multer({ dest: 'uploads/' });
 
 routes.get('/', MetaController.index);
 
@@ -37,7 +49,7 @@ routes.put('/district', DistricController.update);
 routes.delete('/district', DistricController.delete);
 
 // Category
-routes.get('/categorys', CategoryController.search);
+routes.get('/categories', CategoryController.search);
 routes.get('/category/:categoryId', CategoryController.find);
 routes.post('/category', CategoryController.create);
 routes.put('/category', CategoryController.update);
@@ -87,6 +99,11 @@ routes.delete('/reservation/:reservationId', ReservationController.delete);
 
 // Admin
 routes.get('/admin', MetaController.index);
+
+// Upload
+// Xử dụng multer để xử lý form-data
+// Tham khảo https://github.com/expressjs/multer
+routes.post('/upload', upload.single('file'), UploadController.upload); // Chỉ cho phép upload từng file một. Tên trường phải là 'file'
 
 routes.use(errorHandler);
 

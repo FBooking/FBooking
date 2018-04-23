@@ -16,7 +16,7 @@ const StadiumSchema = new Schema({
     },
     districtId: {
         type: Schema.Types.ObjectId,
-        ref: 'Distric',
+        ref: 'District',
     },
     dealDate: String,
     description: String,
