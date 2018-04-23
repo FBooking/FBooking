@@ -12,10 +12,10 @@ class StadiumController extends BaseController {
     * @return {void} Nếu tìm kiếm thành công trả về một mảng các object stadium
      */
     search = async (req, res, next) => {
-        const { page, perPage, districtId, categoryId, name } = req.query;
+        const { page, perPage, districtIds, categoryIds, name } = req.body;
         const conditions = {};
-        if (districtId) conditions.districtId = districtId;
-        if (categoryId) conditions.categoryId = categoryId;
+        if (districtIds) conditions.districtId = { $in: districtIds };
+        if (categoryIds) conditions.categoryId = { $in: categoryIds };
         if (name) conditions.name = { $regex: name };
         try {
             const populateQuery = [
