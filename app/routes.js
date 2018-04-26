@@ -56,7 +56,7 @@ routes.put('/category', CategoryController.update);
 routes.delete('/category', CategoryController.delete);
 
 // Stadium
-routes.post('/stadiums', StadiumController.search);
+routes.get('/stadiums', StadiumController.search);
 routes.get('/stadium/:stadiumId', StadiumController.find);
 routes.post('/stadium', StadiumController.create);
 routes.put('/stadium', StadiumController.update);

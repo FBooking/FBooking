@@ -1,6 +1,5 @@
 import BaseController from './base.controller';
 import Stadium from '../models/stadium';
-import ChildStadium from '../models/childStadium';
 
 class StadiumController extends BaseController {
 
@@ -12,10 +11,10 @@ class StadiumController extends BaseController {
     * @return {void} Nếu tìm kiếm thành công trả về một mảng các object stadium
      */
     search = async (req, res, next) => {
-        const { page, perPage, districtIds, categoryIds, name } = req.body;
+        const { page, perPage, districtId, categoryId, name } = req.query;
         const conditions = {};
-        if (districtIds) conditions.districtId = { $in: districtIds };
-        if (categoryIds) conditions.categoryId = { $in: categoryIds };
+        if (districtId) conditions.districtId = districtId;
+        if (categoryId) conditions.categoryId = categoryId;
         if (name) conditions.name = { $regex: name };
         try {
             const populateQuery = [
@@ -28,11 +27,6 @@ class StadiumController extends BaseController {
                 .limit(parseInt(perPage, 10))
                 .skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
 
-            stadiums.map(async (stadium, idx) => {
-                const { _id } = stadium;
-                const childs = await ChildStadium.find({ stadiumId: _id });
-                stadiums[idx].child = childs;
-            });
             res.status(201).json(stadiums);
         } catch (err) {
             next(err);

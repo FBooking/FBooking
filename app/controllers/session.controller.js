@@ -12,7 +12,7 @@ class SessionController extends BaseController {
     * @return {void} Nếu tìm kiếm session thành công trả về một object thông tin session đó
      */
     search = async (req, res, next) => {
-        const { page, perPage, date } = req.query; // eslint-disable-line TODO: Làm rõ yêu cầu
+        const { page, perPage, date } = req.query;
         const conditions = {};
         const dateSelect = new Date(date); // Chuyển ngày cần tìm sang dạng UTC Time tức là múi giờ gốc là GMT + 0
         const [time, hour] = dateSelect.toLocaleString().split(' '); // Chuyển ngày cần tìm về dạng Local Time tức là múi giờ là múi giờ của system. Sau đó cắt ra thành 2 phần tử. Phần tử thứ nhất là ngày tháng năm, phần thử thứ 2 là giờ phút giây
