@@ -12,8 +12,8 @@ class SessionController extends BaseController {
     * @return {void} Nếu tìm kiếm session thành công trả về một object thông tin session đó
      */
     search = async (req, res, next) => {
-        const { page, perPage, date } = req.query;
-        const conditions = {};
+        const { page, perPage, date, stadiumId } = req.query;
+        let conditions = {};
         const dateSelect = new Date(date); // Chuyển ngày cần tìm sang dạng UTC Time tức là múi giờ gốc là GMT + 0
         const [time, hour] = dateSelect.toLocaleString().split(' '); // Chuyển ngày cần tìm về dạng Local Time tức là múi giờ là múi giờ của system. Sau đó cắt ra thành 2 phần tử. Phần tử thứ nhất là ngày tháng năm, phần thử thứ 2 là giờ phút giây
         const [year, month, day] = time.split('-'); // Cắt chuỗi ngày tháng năm ra thành từng phần tử một
@@ -26,19 +26,25 @@ class SessionController extends BaseController {
         const [timeNow, hourNow] = now.toLocaleString().split(' '); // Chuyển ngày giờ hiện tại về dạng Local Time. Sau đó cắt ra thành 2 phần tử. Phần tử thứ nhất là ngày tháng năm, phần thử thứ 2 là giờ phút giây
         const [yearNow, monthNow, dayNow] = timeNow.split('-'); // Cắt chuỗi ngày tháng năm ra thành từng phần tử một
         const isNow = ((day == dayNow) && (month == monthNow) && (year == yearNow)); // Nếu ngày tháng năm cần tìm = bằng với ngày tháng năm hiện tại thì trả về true, ngược lại là false
-        if (isNow && date) { // Nếu có tìm theo ngày và ngày cần tìm = ngày tháng năm hiện tại thì tìm các session với điều kiện startedAt từ khoảng ngày giờ hiện tại đến hết ngày hiện tại
-            conditions.startedAt = {
-                $gte: now,
-                $lt: dateSelect,
-            };
-        } else if (!isNow && date) { // Nếu có tìm theo ngày và ngày cần tìm không phải là ngày hiện tại thì tìm các session với điều kiện thời gian trong ngày cần tìm. Nghĩa là từ 0h đến 24h của ngày đó
-            conditions.startedAt = {
-                $gte: new Date(date),
-                $lt: dateSelect,
-            };
+        const isOldTime = ((day < dayNow) || (month < monthNow) || (year < yearNow));
+        if (stadiumId) {
+            conditions.stadiumId = stadiumId;
         }
-        // console.log('Thời gian hiện tại ở dạng UCT Time', now);
-        // console.log('Thời gian hiện tại ở dạng Local Time', now.toLocaleString());
+        if (date) {
+            if (isOldTime) { // Nếu ngày tháng năm tìm kiếm nhỏ hơn ngày tháng năm hiện tại thì tìm theo điều kiện này để trả về mảng rỗng
+                conditions.startedAt = '';
+            } else if (isNow) { // Nếu có tìm theo ngày và ngày cần tìm = ngày tháng năm hiện tại thì tìm các session với điều kiện startedAt từ khoảng ngày giờ hiện tại đến hết ngày hiện tại
+                conditions.startedAt = {
+                    $gte: now,
+                    $lt: dateSelect,
+                };
+            } else if (!isNow) { // Nếu có tìm theo ngày và ngày cần tìm không phải là ngày hiện tại thì tìm các session với điều kiện thời gian trong ngày cần tìm. Nghĩa là từ 0h đến 24h của ngày đó
+                conditions.startedAt = {
+                    $gte: new Date(date),
+                    $lt: dateSelect,
+                };
+            }
+        }
         try {
             const category =
                 await Session.find(conditions).limit(parseInt(perPage, 10)).skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
