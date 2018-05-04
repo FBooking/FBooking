@@ -11,7 +11,15 @@ const Amennitie = new Schema({
         type: String,
         required: true,
     },
-    thumbnail: [{ type: String }],
+    thumbnail: [{
+        uid: String,
+        url: String,
+        name: String,
+        status: String,
+        response: {
+            status: String,
+        },
+    }],
     isActive: {
         type: Boolean,
         default: false,

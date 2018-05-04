@@ -44,10 +44,10 @@ class CategoryController extends BaseController {
     * @return {void} Nếu tạo mới Category thành công trả về Category đó kèm theo id
      */
     create = async (req, res, next) => {
-        const { name, code } = req.body;
+        const { name, isActive } = req.body;
         const category = new Category({
             name,
-            code,
+            isActive,
         });
         try {
             res.status(201).json(await category.save());

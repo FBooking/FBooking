@@ -1,5 +1,7 @@
+import { each, set } from 'lodash';
 import BaseController from './base.controller';
 import Session from '../models/session';
+import ChildStadium from '../models/childStadium';
 
 class SessionController extends BaseController {
 
@@ -46,9 +48,22 @@ class SessionController extends BaseController {
             }
         }
         try {
-            const category =
-                await Session.find(conditions).limit(parseInt(perPage, 10)).skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
-            res.status(201).json(category);
+            const populateQuery = [
+                { path: 'stadiumId', select: { name: 1 } },
+            ];
+            const sessions = await Session
+                .find(conditions)
+                .populate(populateQuery)
+                .limit(parseInt(perPage, 10))
+                .skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
+            const result = await Promise.all(sessions.map(async (session) => {
+                const { stadiumId } = session;
+                const childStadiums = await ChildStadium.find({ stadiumId: stadiumId._id });
+                const newSession = JSON.parse(JSON.stringify(session));
+                newSession.childStadiums = childStadiums;
+                return newSession;
+            }));
+            res.status(201).json(result);
         } catch (err) {
             next(err);
         }

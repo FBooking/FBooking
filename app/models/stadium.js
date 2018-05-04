@@ -10,17 +10,46 @@ const StadiumSchema = new Schema({
         type: String,
         required: true,
     },
-    categoryId: {
+    categoryId: [{
         type: Schema.Types.ObjectId,
         ref: 'CategoryStadium',
-    },
+    }],
     districtId: {
         type: Schema.Types.ObjectId,
         ref: 'District',
     },
+    location: {
+        latitude: {
+            type: String,
+            required: true,
+        },
+        longtitude: {
+            type: String,
+            required: true,
+        },
+        latitudeDelta: {
+            type: String,
+        },
+        longtitudeDelta: {
+            type: String,
+        },
+    },
+    // locationId: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Location',
+    //     required: true,
+    // },
     dealDate: String,
     description: String,
-    thumbnail: [{ type: String }],
+    thumbnail: [{
+        uid: String,
+        url: String,
+        name: String,
+        status: String,
+        response: {
+            status: String,
+        },
+    }],
     isActive: {
         type: Boolean,
         default: false,

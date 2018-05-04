@@ -2,11 +2,11 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const Location = new Schema({
-    stadiumId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Stadium',
-        required: true,
-    },
+    // stadiumId: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Stadium',
+    //     required: true,
+    // },
     latitude: {
         type: String,
         required: true,

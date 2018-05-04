@@ -7,7 +7,7 @@ class ChildStadiumController extends BaseController {
         try {
             const childStadiums =
                 await ChildStadium.find({});
-            res.json(childStadiums);
+            res.status(201).json(childStadiums);
         } catch (err) {
             next(err);
         }
@@ -16,7 +16,7 @@ class ChildStadiumController extends BaseController {
     find = async (req, res, next) => {
         try {
             const childStadium = await ChildStadium.findOne({ stadiumId: req.params.stadiumId });
-            res.json(childStadium);
+            res.status(201).json(childStadium);
         } catch (err) {
             next(err);
         }

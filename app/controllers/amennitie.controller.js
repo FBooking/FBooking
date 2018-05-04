@@ -13,7 +13,7 @@ class AmentitieController extends BaseController {
     find = async (req, res, next) => {
         try {
             const amenitie = await Amenitie.findOne({ _id: req.params.amenitieId });
-            res.json(amenitie);
+            res.status(201).json(amenitie);
         } catch (err) {
             next(err);
         }

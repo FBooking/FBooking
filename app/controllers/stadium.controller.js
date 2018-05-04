@@ -1,10 +1,13 @@
 import BaseController from './base.controller';
 import Stadium from '../models/stadium';
+import ChildStadium from '../models/childStadium';
+import Amentitie from '../models/amentitie';
+import Rating from '../models/rating';
 
 class StadiumController extends BaseController {
 
     /**
-     * Tìm kiếm thông tin sân theo các điều kiện
+    * Tìm kiếm thông tin sân theo các điều kiện
     * @param {req} req Thông tin từ client gủi lên. Trong tham số này có chứa các query: page, perPage, districtId, categoryId, name
     * @param {res} res Đối số được gọi để trả về kết quả sau khi tìm kiếm sân thành công.
     * @param {next} next Callback argument to the middleware function .
@@ -27,7 +30,19 @@ class StadiumController extends BaseController {
                 .limit(parseInt(perPage, 10))
                 .skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
 
-            res.status(201).json(stadiums);
+            const result = await Promise.all(stadiums.map(async (stadium) => {
+                const { _id } = stadium;
+                const childStadiums = await ChildStadium.find({ stadiumId: _id });
+                const amentities = await Amentitie.find({ stadiumId: _id });
+                const rates = await Rating.find({ stadiumId: _id });
+                const newStadium = JSON.parse(JSON.stringify(stadium));
+                newStadium.childStadiums = childStadiums;
+                newStadium.amentities = amentities;
+                newStadium.rates = rates;
+                return newStadium;
+            }));
+
+            res.status(201).json(result);
         } catch (err) {
             next(err);
         }

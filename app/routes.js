@@ -13,6 +13,7 @@ import ChildStadiumController from './controllers/child-stadium.controller';
 import SessionController from './controllers/session.controller';
 import ReservationController from './controllers/reservation.controller';
 import UploadController from './controllers/upload.controller';
+import RateController from './controllers/rate.controller';
 
 import errorHandler from './middleware/error-handler';
 
@@ -53,7 +54,7 @@ routes.get('/categories', CategoryController.search);
 routes.get('/category/:categoryId', CategoryController.find);
 routes.post('/category', CategoryController.create);
 routes.put('/category', CategoryController.update);
-routes.delete('/category', CategoryController.delete);
+routes.delete('/category/:categoryId', CategoryController.delete);
 
 // Stadium
 routes.get('/stadiums', StadiumController.search);
@@ -96,6 +97,13 @@ routes.get('/reservations', ReservationController.search);
 routes.get('/reservation/:reservationId', ReservationController.find);
 routes.put('/reservation', ReservationController.update);
 routes.delete('/reservation/:reservationId', ReservationController.delete);
+
+// Rate
+routes.post('/rate', RateController.create);
+routes.get('/rates', RateController.search);
+routes.get('/rate/:rateId', RateController.find);
+routes.put('/rate', RateController.update);
+routes.delete('/rate/:rateId', RateController.delete);
 
 // Admin
 routes.get('/admin', MetaController.index);
