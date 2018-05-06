@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const Amennitie = new Schema({
-    stadiumId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Stadium',
-        required: true,
-    },
+const Amenitie = new Schema({
+    // stadiumId: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Stadium',
+    //     required: true,
+    // },
     name: {
         type: String,
         required: true,
@@ -28,6 +28,6 @@ const Amennitie = new Schema({
         timestamps: true,
     });
 
-const AmennitieModel = mongoose.model('Amennitie', Amennitie);
+const AmenitieModel = mongoose.model('Amenitie', Amenitie);
 
-export default AmennitieModel;
+export default AmenitieModel;

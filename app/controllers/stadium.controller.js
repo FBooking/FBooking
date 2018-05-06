@@ -1,7 +1,6 @@
 import BaseController from './base.controller';
 import Stadium from '../models/stadium';
 import ChildStadium from '../models/childStadium';
-import Amentitie from '../models/amentitie';
 import Rating from '../models/rating';
 
 class StadiumController extends BaseController {
@@ -21,8 +20,9 @@ class StadiumController extends BaseController {
         if (name) conditions.name = { $regex: name };
         try {
             const populateQuery = [
-                { path: 'categoryId', select: { name: 1 } },
-                { path: 'districtId', select: { name: 1 } },
+                { path: 'categoryIds' },
+                { path: 'districtId' },
+                { path: 'amenitieIds' },
             ];
             const stadiums = await Stadium
                 .find(conditions)
@@ -33,11 +33,9 @@ class StadiumController extends BaseController {
             const result = await Promise.all(stadiums.map(async (stadium) => {
                 const { _id } = stadium;
                 const childStadiums = await ChildStadium.find({ stadiumId: _id });
-                const amentities = await Amentitie.find({ stadiumId: _id });
                 const rates = await Rating.find({ stadiumId: _id });
                 const newStadium = JSON.parse(JSON.stringify(stadium));
                 newStadium.childStadiums = childStadiums;
-                newStadium.amentities = amentities;
                 newStadium.rates = rates;
                 return newStadium;
             }));
@@ -57,8 +55,23 @@ class StadiumController extends BaseController {
      */
     find = async (req, res, next) => {
         try {
-            const stadium = await Stadium.findOne({ _id: req.params.stadiumId });
-            res.status(201).json(stadium);
+            const populateQuery = [
+                { path: 'categoryIds' },
+                { path: 'districtId' },
+                { path: 'amenitieIds' },
+            ];
+            const stadium = await Stadium
+                .findOne({ _id: req.params.stadiumId })
+                .populate(populateQuery);
+            const { _id } = stadium;
+            const [childStadiums, rates] = await Promise.all([
+                ChildStadium.find({ stadiumId: _id }),
+                Rating.find({ stadiumId: _id }),
+            ]);
+            const newStadium = JSON.parse(JSON.stringify(stadium));
+            newStadium.childStadiums = childStadiums;
+            newStadium.rates = rates;
+            res.status(201).json(newStadium);
         } catch (err) {
             next(err);
         }

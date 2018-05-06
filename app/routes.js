@@ -5,7 +5,7 @@ import MetaController from './controllers/meta.controller';
 import AuthController from './controllers/auth.controller';
 import UsersController from './controllers/users.controller';
 import DistricController from './controllers/district.controller';
-import AmenitieController from './controllers/amennitie.controller';
+import AmenitieController from './controllers/amenitie.controller';
 import StadiumController from './controllers/stadium.controller';
 import CategoryController from './controllers/category.controller';
 import LocationController from './controllers/location.controller';
@@ -38,7 +38,7 @@ routes.post('/auth/login', AuthController.login);
 routes.get('/users', UsersController.search);
 routes.post('/user', UsersController.create);
 routes.put('/user', UsersController.update);
-routes.get('/user/:username', UsersController.find);
+routes.get('/user/:userId', UsersController.find);
 routes.post('/user/login', UsersController.login);
 // routes.get('/users/:username', UsersController._populate, UsersController.fetch);
 
@@ -64,9 +64,9 @@ routes.put('/stadium', StadiumController.update);
 routes.delete('/stadium/:stadiumId', StadiumController.delete);
 
 // Amenitie
-// routes.get('/amennities', AmenitieController.search);
+routes.get('/amenities', AmenitieController.search);
 routes.get('/amenitie/:amenitieId', AmenitieController.find);
-routes.get('/amenities', AmenitieController.detail);
+// routes.get('/amenities', AmenitieController.detail);
 routes.post('/amenitie', AmenitieController.create);
 routes.put('/amenitie', AmenitieController.update);
 routes.delete('/amenitie/:amenitieId', AmenitieController.delete);

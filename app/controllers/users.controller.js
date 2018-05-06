@@ -39,24 +39,24 @@ class UsersController extends BaseController {
  */
   find = async (req, res, next) => {
     try {
-      const user = await User.findOne({ username: req.params.username });
+      const user = await User.findOne({ userId: req.params.userId });
       res.json(user);
     } catch (err) {
       next(err);
     }
   }
 
-/**
- * Tìm kiếm tất cả các thành viên
- * @param {req} req Thông tin từ client gủi lên.
- * @param {res} res Đối số được gọi để trả về kết quả tìm kiếm cho client.
- * @param {next} next Callback argument to the middleware function .
- * @return {void} Nếu kết quả tìm kiếm chính xác hàm trả về một mảng thông tin các thành viên
- */
+  /**
+   * Tìm kiếm tất cả các thành viên
+   * @param {req} req Thông tin từ client gủi lên.
+   * @param {res} res Đối số được gọi để trả về kết quả tìm kiếm cho client.
+   * @param {next} next Callback argument to the middleware function .
+   * @return {void} Nếu kết quả tìm kiếm chính xác hàm trả về một mảng thông tin các thành viên
+   */
   search = async (req, res, next) => {
     try {
       res.json(await User.find());
-    } catch(err) {
+    } catch (err) {
       next(err);
     }
   }
@@ -77,7 +77,7 @@ class UsersController extends BaseController {
       const savedUser = await newUser.save();
       const token = savedUser.generateToken();
       res.status(201).json({ token });
-    } catch(err) {
+    } catch (err) {
       err.status = 400;
       next(err);
     }
@@ -100,7 +100,7 @@ class UsersController extends BaseController {
     try {
       await req.currentUser.remove();
       res.sendStatus(204);
-    } catch(err) {
+    } catch (err) {
       next(err);
     }
   }
