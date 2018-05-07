@@ -7,11 +7,15 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
   name: {
     type: String,
-    required: [true, 'Email đâu?'],
+    required: [true, 'name đâu?'],
   },
   userId: {
     type: String,
-    required: [true, 'Id đâu?'],
+    required: [true, 'userId đâu?'],
+  },
+  tokenId: {
+    type: String,
+    required: [true, 'tokenId đâu?'],
   },
   avatar: String,
   gender: String,
@@ -36,6 +40,10 @@ const UserSchema = new Schema({
   // idCard: String,
   // phoneNumber: String,
   birthDay: String,
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
   isActive: {
     type: Boolean,
     default: false,
@@ -44,14 +52,11 @@ const UserSchema = new Schema({
     timestamps: true,
   });
 
-// Loại bỏ trường password khi trả lại kết quả là thông tin chi tiết của một user
+// Loại bỏ trường isAdmin khi trả lại kết quả là thông tin chi tiết của một user
 UserSchema.set('toJSON', {
   virtuals: true,
   transform(doc, obj) {
-    obj.id = obj._id;
-    delete obj._id;
-    delete obj.__v;
-    delete obj.password;
+    delete obj.isAdmin;
     return obj;
   },
 });
