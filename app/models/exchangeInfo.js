@@ -7,9 +7,9 @@ const ExchangeSchema = new Schema({
         ref: 'User',
         required: true,
     },
-    stadiumId: {
+    childStadiumId: {
         type: Schema.Types.ObjectId,
-        ref: 'Stadium',
+        ref: 'ChildStadium',
         required: true,
     },
     sessionId: {
