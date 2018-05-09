@@ -28,7 +28,7 @@ class SessionController extends BaseController {
         const [timeNow, hourNow] = now.toLocaleString().split(' '); // Chuyển ngày giờ hiện tại về dạng Local Time. Sau đó cắt ra thành 2 phần tử. Phần tử thứ nhất là ngày tháng năm, phần thử thứ 2 là giờ phút giây
         const [yearNow, monthNow, dayNow] = timeNow.split('-'); // Cắt chuỗi ngày tháng năm ra thành từng phần tử một
         const isNow = ((day == dayNow) && (month == monthNow) && (year == yearNow)); // Nếu ngày tháng năm cần tìm = bằng với ngày tháng năm hiện tại thì trả về true, ngược lại là false
-        const isOldTime = ((day < dayNow) || (month < monthNow) || (year < yearNow));
+        const isOldTime = ((day < dayNow) && (month < monthNow) && (year < yearNow));
         if (stadiumId) {
             conditions.stadiumId = stadiumId;
         }
@@ -79,7 +79,11 @@ class SessionController extends BaseController {
     find = async (req, res, next) => {
         try {
             const session = await Session.findOne({ _id: req.params.sessionId });
-            res.status(201).json(session);
+            const { stadiumId } = session;
+            const childStadiums = await ChildStadium.find({ stadiumId: stadiumId });
+            const newSession = JSON.parse(JSON.stringify(session));
+            newSession.childStadiums = childStadiums;
+            res.status(201).json(newSession);
         } catch (err) {
             next(err);
         }
