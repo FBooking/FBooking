@@ -11,9 +11,13 @@ class ReservationController extends BaseController {
     * @return {void} Nếu tìm kiếm thành công trả về một mảng các object Reservation
      */
     search = async (req, res, next) => {
+        const { page, perPage } = req.query;
         try {
             const reservation =
-                await Reservation.find({});
+                await Reservation
+                    .find({})
+                    .limit(parseInt(perPage, 10))
+                    .skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
             res.status(201).json(reservation);
         } catch (err) {
             next(err);

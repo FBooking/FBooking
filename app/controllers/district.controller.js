@@ -11,9 +11,12 @@ class DistricController extends BaseController {
     * @return {void} Nếu tìm kiếm thành công trả về một mảng các object District
      */
     search = async (req, res, next) => {
+        const { page, perPage } = req.query;
         try {
-            const districts =
-                await District.find({});
+            const districts = await District
+                .find({})
+                .limit(parseInt(perPage, 10))
+                .skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
             res.status(201).json(districts);
         } catch (err) {
             next(err);

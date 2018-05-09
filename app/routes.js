@@ -47,7 +47,7 @@ routes.get('/districts', DistricController.search);
 routes.get('/district/:districtId', DistricController.find);
 routes.post('/district', DistricController.create);
 routes.put('/district', DistricController.update);
-routes.delete('/district', DistricController.delete);
+routes.delete('/district/:districtId', DistricController.delete);
 
 // Category
 routes.get('/categories', CategoryController.search);

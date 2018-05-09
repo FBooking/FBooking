@@ -11,9 +11,13 @@ class CategoryController extends BaseController {
     * @return {void} Nếu tìm kiếm thành công trả về một mảng các object Category
      */
     search = async (req, res, next) => {
+        const { page, perPage } = req.query;
         try {
             const categories =
-                await Category.find({});
+                await Category
+                    .find({})
+                    .limit(parseInt(perPage, 10))
+                    .skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
             res.status(201).json(categories);
         } catch (err) {
             next(err);
