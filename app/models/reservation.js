@@ -16,9 +16,21 @@ const Reservation = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Session',
     },
-    date: {
+    // date: {
+    //     type: String,
+    //     required: true,
+    // },
+    bankNumber: {
+        type: Number,
+        required: true,
+    },
+    bankName: {
         type: String,
         required: true,
+    },
+    payed: {
+        type: Boolean,
+        default: false,
     },
     isChecked: {
         type: Boolean,
