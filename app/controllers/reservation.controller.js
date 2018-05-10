@@ -94,10 +94,10 @@ class ReservationController extends BaseController {
     * @return {void} Nếu tạo mới Reservation thành công trả về Reservation đó kèm theo id
      */
     create = async (req, res, next) => {
-        const { userId, sessionId } = req.body;
+        const { childStadiumId, sessionId } = req.body;
         try {
             const reservation = await Reservation.findOne({
-                userId, sessionId,
+                childStadiumId, sessionId,
             });
             if (reservation) {
                 return res.status(201).json({ success: false, message: 'Đơn hàng đã tồn tại.' });
