@@ -1,5 +1,6 @@
 import BaseController from './base.controller';
 import Reservation from '../models/reservation';
+import Session from '../models/session';
 
 class ReservationController extends BaseController {
 
@@ -13,12 +14,25 @@ class ReservationController extends BaseController {
     search = async (req, res, next) => {
         const { page, perPage } = req.query;
         try {
-            const reservation =
+            const populateQuery = [
+                { path: 'userId' },
+                { path: 'childStadiumId' },
+                { path: 'sessionId' },
+                {
+                    path: 'childStadiumId',
+                    populate: {
+                        path: 'stadiumId',
+                    },
+                },
+            ];
+            const reservations =
                 await Reservation
                     .find({})
+                    .sort({ createdAt: -1 })
+                    .populate(populateQuery)
                     .limit(parseInt(perPage, 10))
                     .skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
-            res.status(201).json(reservation);
+            res.status(201).json(reservations);
         } catch (err) {
             next(err);
         }
@@ -33,8 +47,40 @@ class ReservationController extends BaseController {
      */
     find = async (req, res, next) => {
         try {
-            const reservation = await Reservation.findOne({ _id: req.params.reservationId });
+            const populateQuery = [
+                { path: 'userId' },
+                { path: 'childStadiumId' },
+                { path: 'sessionId' },
+                {
+                    path: 'childStadiumId',
+                    populate: {
+                        path: 'stadiumId',
+                    },
+                },
+            ];
+            const reservation = await Reservation
+                .findOne({ _id: req.params.reservationId })
+                .populate(populateQuery);
             res.status(201).json(reservation);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Cập nhật thông tin thanh toán và thông tin của session tương ứng. Nếu xác nhận đã thanh toán sẽ set
+     * giá trị isActive của session tương ứng thành false và ngược lại
+    * @param {req} req Thông tin từ client gủi lên.
+    * @param {res} res Đối số được gọi để trả về kết quả sau khi tạo mới Reservation thành công.
+    * @param {next} next Callback argument to the middleware function .
+    * @return {void} Nếu tạo mới Reservation thành công trả về Reservation đó kèm theo id
+     */
+    confirmPayed = async (req, res, next) => {
+        const { _id, payed } = req.body;
+        try {
+            const reservation = await Reservation.findByIdAndUpdate(_id, { payed }, { new: true });
+            const session = await Session.findByIdAndUpdate(reservation.sessionId, { isActive: !payed }, { new: true });
+            res.status(201).json({ reservation, session });
         } catch (err) {
             next(err);
         }
@@ -49,17 +95,18 @@ class ReservationController extends BaseController {
      */
     create = async (req, res, next) => {
         const { userId, sessionId } = req.body;
-        const reservation = await Reservation.findOne({
-            userId, sessionId,
-        });
-        if (reservation) {
-            return res.status(201).json({ message: 'Đơn hàng đã tồn tại.' });
-        }
-        const newReservation = new Reservation({
-            ...req.body,
-        });
         try {
-            res.status(201).json(await newReservation.save());
+            const reservation = await Reservation.findOne({
+                userId, sessionId,
+            });
+            if (reservation) {
+                return res.status(201).json({ message: 'Đơn hàng đã tồn tại.' });
+            }
+            const newReservation = new Reservation({
+                ...req.body,
+            });
+            const result = await newReservation.save();
+            res.status(201).json({ success: true, reservation: result });
         } catch (err) {
             next(err);
         }
@@ -91,6 +138,24 @@ class ReservationController extends BaseController {
     delete = async (req, res, next) => {
         try {
             res.status(201).json(await Reservation.remove({ _id: req.params.reservationId }));
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Xóa nhiều bản ghi reservation theo 1 mảng các id
+     *@param {req} req Thông tin từ client gủi lên.
+    * @param {res} res Đối số được gọi để trả về kết quả sau khi tạo mới session thành công.
+    * @param {next} next Callback argument to the middleware function .
+     */
+    deletes = async (req, res, next) => {
+        const { ids } = req.body;
+        try {
+            const result = await Promise.all(ids.map(async (id) => {
+                await Reservation.remove({ _id: id });
+            }));
+            res.status(201).json(result ? { success: true } : { success: false });
         } catch (err) {
             next(err);
         }

@@ -97,6 +97,8 @@ routes.get('/reservations', ReservationController.search);
 routes.get('/reservation/:reservationId', ReservationController.find);
 routes.put('/reservation', ReservationController.update);
 routes.delete('/reservation/:reservationId', ReservationController.delete);
+routes.put('/confirm-payed', ReservationController.confirmPayed);
+routes.post('/delete-reservations', ReservationController.deletes);
 
 // Rate
 routes.post('/rate', RateController.create);
