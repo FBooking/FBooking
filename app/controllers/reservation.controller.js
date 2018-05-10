@@ -100,7 +100,7 @@ class ReservationController extends BaseController {
                 userId, sessionId,
             });
             if (reservation) {
-                return res.status(201).json({ message: 'Đơn hàng đã tồn tại.' });
+                return res.status(201).json({ success: false, message: 'Đơn hàng đã tồn tại.' });
             }
             const newReservation = new Reservation({
                 ...req.body,
