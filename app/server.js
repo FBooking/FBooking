@@ -24,6 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Khởi tạo các router dùng trong app
+console.log('Khởi tạo các router dùng trong app');
 app.use(Constants.apiPrefix, routes);
 
 app.listen(Constants.port, () => {

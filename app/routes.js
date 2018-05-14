@@ -33,7 +33,7 @@ routes.get('/', MetaController.index);
 
 // Authentication
 routes.post('/auth/login', AuthController.login);
-
+console.log('Khoi tao thanh cong meta controler voi auth controller');
 // Users
 routes.get('/users', UsersController.search);
 routes.post('/user', UsersController.create);
