@@ -1,6 +1,6 @@
 import BaseController from './base.controller';
-// import Session from '../models/session';
-// import ChildStadium from '../models/childStadium';
+import Session from '../models/session.schema';
+import ChildStadium from '../models/childStadium';
 
 class SessionController extends BaseController {
 
@@ -47,23 +47,22 @@ class SessionController extends BaseController {
             }
         }
         try {
-            // const populateQuery = [
-            //     { path: 'stadiumId', select: { name: 1 } },
-            // ];
-            // const sessions = await Session
-            //     .find(conditions)
-            //     .populate(populateQuery)
-            //     .limit(parseInt(perPage, 10))
-            //     .skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
-            // const result = await Promise.all(sessions.map(async (session) => {
-            //     const { stadiumId } = session;
-            //     const childStadiums = await ChildStadium.find({ stadiumId: stadiumId._id });
-            //     const newSession = JSON.parse(JSON.stringify(session));
-            //     newSession.childStadiums = childStadiums;
-            //     return newSession;
-            // }));
-            // res.status(201).json(result);
-            res.status(201).json({});
+            const populateQuery = [
+                { path: 'stadiumId', select: { name: 1 } },
+            ];
+            const sessions = await Session
+                .find(conditions)
+                .populate(populateQuery)
+                .limit(parseInt(perPage, 10))
+                .skip((parseInt(page, 10) - 1) * parseInt(perPage, 10));
+            const result = await Promise.all(sessions.map(async (session) => {
+                const { stadiumId } = session;
+                const childStadiums = await ChildStadium.find({ stadiumId: stadiumId._id });
+                const newSession = JSON.parse(JSON.stringify(session));
+                newSession.childStadiums = childStadiums;
+                return newSession;
+            }));
+            res.status(201).json(result);
         } catch (err) {
             next(err);
         }
@@ -78,13 +77,12 @@ class SessionController extends BaseController {
      */
     find = async (req, res, next) => {
         try {
-            // const session = await Session.findOne({ _id: req.params.sessionId });
-            // const { stadiumId } = session;
-            // const childStadiums = await ChildStadium.find({ stadiumId: stadiumId });
-            // const newSession = JSON.parse(JSON.stringify(session));
-            // newSession.childStadiums = childStadiums;
-            // res.status(201).json(newSession);
-            res.status(201).json({});
+            const session = await Session.findOne({ _id: req.params.sessionId });
+            const { stadiumId } = session;
+            const childStadiums = await ChildStadium.find({ stadiumId: stadiumId });
+            const newSession = JSON.parse(JSON.stringify(session));
+            newSession.childStadiums = childStadiums;
+            res.status(201).json(newSession);
         } catch (err) {
             next(err);
         }
@@ -99,12 +97,11 @@ class SessionController extends BaseController {
     * @return {void} Nếu tạo mới session thành công trả về session đó kèm theo id
      */
     create = async (req, res, next) => {
-        // const session = new Session({
-        //     ...req.body,
-        // });
+        const session = new Session({
+            ...req.body,
+        });
         try {
-            // res.status(201).json(await session.save());
-            res.status(201).json({});
+            res.status(201).json(await session.save());
         } catch (err) {
             next(err);
         }
@@ -118,10 +115,9 @@ class SessionController extends BaseController {
     * @return {void} Nếu cập nhật session thành công trả về session đó kèm theo id
      */
     update = async (req, res, next) => {
-        // const { _id, ...otherParams } = req.body;
+        const { _id, ...otherParams } = req.body;
         try {
-            // res.status(201).json(await Session.findByIdAndUpdate(_id, otherParams, { new: true }));
-            res.status(201).json({});
+            res.status(201).json(await Session.findByIdAndUpdate(_id, otherParams, { new: true }));
         } catch (err) {
             next(err);
         }
@@ -136,8 +132,7 @@ class SessionController extends BaseController {
      */
     delete = async (req, res, next) => {
         try {
-            // res.status(201).json(await Session.remove({ _id: req.params.sessionId }));
-            res.status(201).json({});
+            res.status(201).json(await Session.remove({ _id: req.params.sessionId }));
         } catch (err) {
             next(err);
         }
