@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import routes from './routes';
 import Constants from './config/constants';
 
+console.log('Thuc thi file server.js');
 const app = express();
 
 // Bật CORS. Nếu không dùng khi client request lên sẽ lỗi 'No Acccess Origin'
