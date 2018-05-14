@@ -57,6 +57,7 @@ UserSchema.set('toJSON', {
   virtuals: true,
   transform(doc, obj) {
     delete obj.isAdmin;
+    delete obj.id;
     return obj;
   },
 });
