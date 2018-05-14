@@ -1,6 +1,6 @@
 import BaseController from './base.controller';
 import Reservation from '../models/reservation';
-import Session from '../models/session';
+import Session from '../models/session.schema';
 
 class ReservationController extends BaseController {
 
