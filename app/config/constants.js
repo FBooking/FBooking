@@ -37,7 +37,7 @@ const environmentConfigs = {
   },
   production: { // môi trường product
     mongo: {
-      uri: process.env.MONGO_URI,
+      uri: process.env.MONGO_URI || 'mongodb://localhost/fbooking',
     },
   },
 };
