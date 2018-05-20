@@ -13,7 +13,7 @@ class SessionController extends BaseController {
     * @return {void} Nếu tìm kiếm session thành công trả về một object thông tin session đó
      */
     search = async (req, res, next) => {
-        const { page, perPage, date, stadiumId } = req.query;
+        const { page, perPage, date, childStadiumId } = req.query;
         let conditions = {};
         const dateSelect = new Date(date); // Chuyển ngày cần tìm sang dạng UTC Time tức là múi giờ gốc là GMT + 0
         const [time, hour] = dateSelect.toLocaleString().split(' '); // Chuyển ngày cần tìm về dạng Local Time tức là múi giờ là múi giờ của system. Sau đó cắt ra thành 2 phần tử. Phần tử thứ nhất là ngày tháng năm, phần thử thứ 2 là giờ phút giây
@@ -28,8 +28,8 @@ class SessionController extends BaseController {
         const [yearNow, monthNow, dayNow] = timeNow.split('-'); // Cắt chuỗi ngày tháng năm ra thành từng phần tử một
         const isNow = ((day == dayNow) && (month == monthNow) && (year == yearNow)); // Nếu ngày tháng năm cần tìm = bằng với ngày tháng năm hiện tại thì trả về true, ngược lại là false
         const isOldTime = ((day < dayNow) && (month < monthNow) && (year < yearNow));
-        if (stadiumId) {
-            conditions.stadiumId = stadiumId;
+        if (childStadiumId) {
+            conditions.childStadiumId = childStadiumId;
         }
         if (date) {
             if (isOldTime) { // Nếu ngày tháng năm tìm kiếm nhỏ hơn ngày tháng năm hiện tại thì tìm theo điều kiện này để trả về mảng rỗng
@@ -83,6 +83,24 @@ class SessionController extends BaseController {
             const newSession = JSON.parse(JSON.stringify(session));
             newSession.childStadiums = childStadiums;
             res.status(201).json(newSession);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * Tìm kiếm tất cả các session theo childStadiumId
+    * @param {req} req Thông tin từ client gủi lên.
+    * @param {res} res Đối số được gọi để trả về kết quả sau khi tìm kiếm session thành công.
+    * @param {next} next Callback argument to the middleware function .
+    * @return {void} Kết quả trả về một array các session
+     */
+    findByChildStadium = async (req, res, next) => {
+        try {
+            console.log(req.params.childStadiumId);
+            const sessions = await Session.find({ childStadiumId: req.params.childStadiumId });
+            console.log(sessions);
+            res.status(201).json(sessions);
         } catch (err) {
             next(err);
         }

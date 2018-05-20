@@ -81,10 +81,11 @@ routes.delete('/location/:locationId', LocationController.delete);
 routes.get('/child-stadiums/:stadiumId', ChildStadiumController.find);
 routes.post('/child-stadium', ChildStadiumController.create);
 routes.put('/child-stadium', ChildStadiumController.update);
-routes.delete('/child-stadium/:childStadiumId', SessionController.delete);
+routes.delete('/child-stadium/:childStadiumId', ChildStadiumController.delete);
 
 // Session
 routes.get('/sessions', SessionController.search);
+routes.get('/all-sessions/:childStadiumId', SessionController.findByChildStadium);
 routes.get('/session/:sessionId', SessionController.find);
 routes.post('/session', SessionController.create);
 routes.put('/session', SessionController.update);

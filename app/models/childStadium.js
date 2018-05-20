@@ -10,7 +10,15 @@ const ChildStadiumSchema = new Schema({
     numberOfS: {
         type: Number,
     },
-    thumbnail: [{ type: String }],
+    thumbnail: [{
+        uid: String,
+        url: String,
+        name: String,
+        status: String,
+        response: {
+            status: String,
+        },
+    }],
     isActive: {
         type: Boolean,
         default: false,

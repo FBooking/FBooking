@@ -13,9 +13,9 @@ const SessionSchema = new Schema({
         type: Date,
         required: true,
     },
-    stadiumId: {
+    childStadiumId: {
         type: Schema.Types.ObjectId,
-        ref: 'Stadium',
+        ref: 'ChildStadium',
         required: true,
     },
     price: {
