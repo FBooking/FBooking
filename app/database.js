@@ -5,7 +5,6 @@ import Constants from './config/constants';
 mongoose.Promise = global.Promise;
 
 // Kết nối đến database;
-console.log('Kết nối đến', Constants.mongo.uri);
 mongoose.connect(Constants.mongo.uri, {
   useMongoClient: true,
 });
